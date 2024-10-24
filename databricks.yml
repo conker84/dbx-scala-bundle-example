@@ -1,0 +1,84 @@
+bundle:
+  name: databricks-bundles-scala-example
+variables:
+  jar_file:
+    description: the jar file name
+resources:
+  jobs:
+    dbx-scala-bundle-example:
+      name: dbx-scala-bundle-example
+      tasks:
+        - task_key: ingest
+          spark_jar_task:
+            jar_uri: ""
+            main_class_name: com.databricks.example.MainApp
+            parameters:
+              - -r
+              - 10
+          job_cluster_key: dbx-scala-bundle-example-cluster
+          libraries:
+            - jar: /Volumes/as_catalog/bosch/jars/${var.jar_file}
+          email_notifications:
+            on_failure:
+              - andrea.santurbano@databricks.com
+      job_clusters:
+        - job_cluster_key: dbx-scala-bundle-example-cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 14.3.x-scala2.12
+            node_type_id: r6i.4xlarge
+            driver_node_type_id: r6i.4xlarge
+            custom_tags:
+              cost_center: 'MY-BU'
+            enable_elastic_disk: false
+            data_security_mode: SINGLE_USER
+            runtime_engine: PHOTON
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              spot_bid_price_percent: 100
+              ebs_volume_type: GENERAL_PURPOSE_SSD
+              ebs_volume_count: 3
+              ebs_volume_size: 100
+            autoscale:
+              min_workers: 1
+              max_workers: 1
+      tags:
+        environment: ${bundle.target}
+#        owner: andrea.santurbano
+#        repo: https://github.com/conker84/databricks-bundle-example
+
+targets:
+  # The 'dev' target, for development purposes. This target is the default.
+  dev:
+    # We use 'mode: development' to indicate this is a personal development copy:
+    # - Deployed resources get prefixed with '[dev my_user_name]'
+    # - Any job schedules and triggers are paused by default
+    # - The 'development' mode is used for Delta Live Tables pipelines
+    mode: development
+    default: true
+    workspace:
+      host: https://e2-demo-field-eng.cloud.databricks.com
+
+  ## Optionally, there could be a 'staging' target here.
+  ## (See Databricks docs on CI/CD at https://docs.databricks.com/dev-tools/bundles/ci-cd.html.)
+  #
+  # staging:
+  #   workspace:
+  #     host: https://e2-demo-field-eng.cloud.databricks.com
+
+  # The 'prod' target, used for production deployment.
+  prod:
+    # We use 'mode: production' to indicate this is a production deployment.
+    # Doing so enables strict verification of the settings below.
+    mode: production
+    workspace:
+      host: https://e2-demo-field-eng.cloud.databricks.com
+      # We always use /Users/andrea.santurbano@databricks.com for all resources to make sure we only have a single copy.
+      # If this path results in an error, please make sure you have a recent version of the CLI installed.
+#      root_path: /Users/andrea.santurbano@databricks.com/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      # This runs as andrea.santurbano@databricks.com in production. We could also use a service principal here,
+      # see https://docs.databricks.com/dev-tools/bundles/permissions.html.
+      user_name: andrea.santurbano@databricks.com

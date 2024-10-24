@@ -1,0 +1,4 @@
+*.css linguist-detectable=false
+*.xml linguist-detectable=false
+*.xslt linguist-detectable=false
+*.xsl linguist-detectable=false
