@@ -8,19 +8,19 @@ lazy val root = (project in file("."))
 organization := "com.databricks"
 mainClass    := Some("com.databricks.example.MainApp")
 
-ThisBuild / scalaVersion  := "2.12.16"
+ThisBuild / scalaVersion  := "2.13.14"
 
 Compile / packageBin / run / mainClass := Some("com.databricks.example.MainApp")
 Compile / javacOptions ++= Seq("-source", "8")
 
 
-val sparkVersion = "3.5.0"
+val sparkVersion = "4.0.0"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-mllib" % sparkVersion % "provided",
-  "org.apache.spark" %% "spark-hive" % sparkVersion % "provided"
+  "org.apache.spark" %% "spark-hive" % sparkVersion % "provided",
 )
 
 

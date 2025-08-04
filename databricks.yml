@@ -17,7 +17,7 @@ resources:
               - 10
           job_cluster_key: dbx-scala-bundle-example-cluster
           libraries:
-            - jar: /Volumes/as_catalog/bosch/jars/${var.jar_file}
+            - jar: /Volumes/as_catalog/default/drop_box/${var.jar_file}
           email_notifications:
             on_failure:
               - andrea.santurbano@databricks.com
@@ -25,7 +25,7 @@ resources:
         - job_cluster_key: dbx-scala-bundle-example-cluster
           new_cluster:
             cluster_name: ""
-            spark_version: 14.3.x-scala2.12
+            spark_version: 17.0.x-scala2.13
             node_type_id: r6i.4xlarge
             driver_node_type_id: r6i.4xlarge
             custom_tags:
